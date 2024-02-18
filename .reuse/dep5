@@ -1,7 +1,8 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Gardener <repo name>
+Upstream-Name: Gardener fork of mvladev/quic-reverse-http-tunnel
 Upstream-Contact: The Gardener project <gardener@googlegroups.com>
-Source: https://github.com/gardener/<repo name>
+Source: https://github.com/gardener/quic-reverse-http-tunnel
+Comment: This is a fork of mvladev/quic-reverse-http-tunnel (https://github.com/mvladev/quic-reverse-http-tunnel)
 
 # --------------------------------------------------
 # source code
@@ -21,9 +22,9 @@ License: CC-BY-4.0
 # third-party
 
 # --- copied source code ---
-# Files: 
-# Copyright: 
-# License: 
+# Files:
+# Copyright:
+# License:
 
 # --- vendor folder dependencies ---
 # Files:
