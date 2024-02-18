@@ -55,8 +55,19 @@ $ make start-client-tcp
 
 Docker images are available at:
 
-- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-server:v0.1.4`
-- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-client:v0.1.4`
-- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-client-tcp:v0.1.4`
+- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-server:latest`
+- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-client:latest`
+- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-client-tcp:latest`
 
-or at the `latest` tag.
+If you want to use a specific version tag, the latest version is specified in the `VERSION` variable in the repository's [`Makefile`](./Makefile).
+
+When you want to update the docker images and push a new version:
+1. Bump the `VERSION` variable in the repository's [`Makefile`](./Makefile)
+1. Run the following command to build new images:
+    ```console
+    make docker-images
+    ```
+1. Run the following command to push the images to `ghcr.io/gardener/quic-reverse-http-tunnel`
+    ```console
+    make push-docker-images
+    ```
