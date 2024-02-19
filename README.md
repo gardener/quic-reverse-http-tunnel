@@ -1,6 +1,6 @@
 # quic-reverse-http-tunnel
 
-[![reuse compliant](https://reuse.software/badge/reuse-compliant.svg)](https://reuse.software/)
+[![REUSE status](https://api.reuse.software/badge/github.com/gardener/quic-reverse-http-tunnel)](https://api.reuse.software/info/github.com/gardener/quic-reverse-http-tunnel)
 
 ## What it does
 
