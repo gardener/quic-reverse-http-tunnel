@@ -1,101 +1,73 @@
-# <repo name>
+# quic-reverse-http-tunnel
 
-[![reuse compliant](https://reuse.software/badge/reuse-compliant.svg)](https://reuse.software/)
+[![REUSE status](https://api.reuse.software/badge/github.com/gardener/quic-reverse-http-tunnel)](https://api.reuse.software/info/github.com/gardener/quic-reverse-http-tunnel)
 
-## How to use this repository template
+## What it does
 
-This template repository can be used to seed new git repositories in the gardener github organisation.
+It's a reverse HTTP Tunnel using QUIC:
 
-- [Create the new repository](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template)
-  based on this template repository
-- Replacing placeholders:
-  - In file `.reuse/dep5` replace placeholder `<repo name>` with the name of your new repository.
-  - In file `CODEOWNERS` replace `<repo name>` and `<maintainer team>`. Use the name of the github team in [gardener teams](https://github.com/orgs/gardener/teams) defining maintainers of the new repository.
-- Set the repository description in the "About" section of your repository
-- Describe the new component in additional sections in this `README.md`
-- Ask the [Owner of the gardener github organisation](https://github.com/orgs/gardener/people?query=role%3Aowner)
-  - to double-check the initial content of this repository
-  - to create the maintainer team for this new repository
-  - to make this repository public
-  - protect at least the master branch requiring mandatory code review by the maintainers defined in CODEOWNERS
-  - grant admin permission to the maintainers team of the new repository defined in CODEOWNERS
-
-## Maintain copyright and license information
-By default all source code files are under `Apache 2.0` and all markdown files are under `Creative Commons` license.
-
-When creating new source code files the license and copyright information should be provided using corresponding SPDX headers.
-
-Example for go source code files (replace `<year>` with the current year)
-```
-/*
- * SPDX-FileCopyrightText: <year> SAP SE or an SAP affiliate company and Gardener contributors
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+```text
+K8S apiserver / curl --- TCP ----> [proxy-server] ---- QUIC ----> [proxy-agent]---TCP--> [kubelet]
 ```
 
-### Third-party source code
+1. the proxy-server listens for `tcp` (no HTTP server running) and `quic`.
+1. The proxy-agent talks to the server and opens a `quic` session.
+1. It starts a HTTP tunnel server that listens on that session for new streams.
+1. When the API server / curl talks to the proxy-server, it creates a new `quic` stream and sends the data to the proxy-agent.
+1. The HTTP server in the proxy-agent that listens on new quic streams accepts the stream, opens TCP connection to the requested host (from the CONNECT) and pipes the data back.
 
-If you copy third-party code into this repository or fork a repository, you must keep the license and copyright information (usually defined in the header of the file).
+The proxy can also run as a simple passthrough proxy via `client-tcp`
+## Building and running
 
-In addition you should adapt the `.reuse/dep5` file and assign the correct copyright and license information.
+Run the server:
 
-**Example `dep5` file if you copy source code into your repository:**
-```
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Gardener <repo name>
-Upstream-Contact: The Gardener project <gardener@googlegroups.com>
-Source: https://github.com/gardener/<repo name>
-
-# --------------------------------------------------
-# source code
-
-Files: *
-Copyright: 2017-2024 SAP SE or an SAP affiliate company and Gardener contributors
-License: Apache-2.0
-
-# --------------------------------------------------
-# documentation
-
-Files: *.md
-Copyright: 2017-2024 SAP SE or an SAP affiliate company and Gardener contributors
-License: CC-BY-4.0
-
-# --------------------------------------------------
-# third-party
-
-# --- copied source code ---
-Files: pkg/utils/validation/kubernetes/core/*
-Copyright: 2014 The Kubernetes Authors.
-License: Apache-2.0
-```
-**Example `dep5` file if you have forked a repository:**
-```
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Gardener fork of kubernetes/autoscaler
-Upstream-Contact: The Gardener project <gardener@googlegroups.com>
-Source: https://github.com/gardener/autoscaler
-Comment: This is a fork of kubernetes/autoscaler (https://github.com/kubernetes/autoscaler)
-
-# --------------------------------------------------
-# source code
-
-Files: *
-Copyright: 2016-2018 The Kubernetes Authors.
-License: Apache-2.0
-
-Files: .ci/*
-Copyright: 2024 SAP SE or an SAP affiliate company and Gardener contributors
-License: Apache-2.0
+```console
+$ make start-server
+2020/11/01 02:11:39 quick listener on 0.0.0.0:8888
+2020/11/01 02:11:39 tcp listener on 0.0.0.0:10443
+2020/11/01 02:11:39 waiting for new quic client session
+2020/11/01 02:11:39 waiting for tcp client connections
 ```
 
-#### Modifications
-In case you modify copied/forked source code you must state this in the header via the following text:
+in another terminal run the client:
 
-**Modifications Copyright <year> SAP SE or an SAP affiliate company and Gardener contributors**
+```console
+$ make start-client
+2020/11/01 02:13:31 dialing quic server...
+2020/11/01 02:13:31 starting http server
+```
 
+and in third try to access it:
 
-### Get your reuse badge
-To get your project reuse compliant you should register it [here](https://api.reuse.software/register) using your SAP email address. After confirming your email, an inital reuse check is done by the reuse API.
+```console
+curl -p --proxy localhost:10443 http://www.example.com
+```
 
-To add the badge to your project's `README.md` file, use the snipped provided by the reuse API.
+If you want to test the passthrough proxy instead:
+
+```console
+$ make start-client-tcp
+2020/11/25 12:07:07 dialing quic server...
+2020/11/25 12:07:07 connected to quic server
+```
+
+## Docker images
+
+Docker images are available at:
+
+- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-server:latest`
+- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-client:latest`
+- `ghcr.io/gardener/quic-reverse-http-tunnel/quic-client-tcp:latest`
+
+If you want to use a specific version tag, the latest version is specified in the `VERSION` variable in the repository's [`Makefile`](./Makefile).
+
+When you want to update the docker images and push a new version:
+1. Bump the `VERSION` variable in the repository's [`Makefile`](./Makefile)
+1. Run the following command to build new images:
+    ```console
+    make docker-images
+    ```
+1. Run the following command to push the images to `ghcr.io/gardener/quic-reverse-http-tunnel`
+    ```console
+    make push-docker-images
+    ```
