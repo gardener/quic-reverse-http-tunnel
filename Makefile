@@ -2,11 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-REGISTRY              := ghcr.io/gardener/quic-reverse-http-tunnel
+REGISTRY              ?= ghcr.io/gardener/quic-reverse-http-tunnel
 CLIENT_IMAGE_NAME     := $(REGISTRY)/quic-client
 CLIENT_TCP_IMAGE_NAME := $(REGISTRY)/quic-client-tcp
 SERVER_IMAGE_NAME     := $(REGISTRY)/quic-server
-VERSION               := v0.1.4
+IMAGE_TAG             ?= local-dev
 
 LOCAL_CERTS_DIR := dev/certs
 LOCAL_CERTS     := $(LOCAL_CERTS_DIR)/ca.crt $(LOCAL_CERTS_DIR)/ca.key $(LOCAL_CERTS_DIR)/client.crt $(LOCAL_CERTS_DIR)/client.key $(LOCAL_CERTS_DIR)/tls.crt $(LOCAL_CERTS_DIR)/tls.key
@@ -47,24 +47,15 @@ start-client-tcp: $(LOCAL_CERTS)
 		--upstream=www.example.com:80 \
 		--v=2
 
-#################################################################
-# Rules related to binary build, Docker image build and release #
-#################################################################
+########################################################
+# Rules related to binary build and Docker image build #
+########################################################
 
 .PHONY: docker-images
 docker-images:
-	@docker build --platform linux/amd64,linux/arm64 -t $(CLIENT_IMAGE_NAME):$(VERSION) -t $(CLIENT_IMAGE_NAME):latest -f Dockerfile --target client .
-	@docker build --platform linux/amd64,linux/arm64 -t $(CLIENT_TCP_IMAGE_NAME):$(VERSION) -t $(CLIENT_TCP_IMAGE_NAME):latest -f Dockerfile --target client-tcp .
-	@docker build --platform linux/amd64,linux/arm64 -t $(SERVER_IMAGE_NAME):$(VERSION) -t $(SERVER_IMAGE_NAME):latest -f Dockerfile --target server .
-
-.PHONY: push-docker-images
-push-docker-images:
-	@docker push $(CLIENT_IMAGE_NAME):$(VERSION)
-	@docker push $(CLIENT_TCP_IMAGE_NAME):$(VERSION)
-	@docker push $(SERVER_IMAGE_NAME):$(VERSION)
-	@docker push $(CLIENT_IMAGE_NAME):latest
-	@docker push $(CLIENT_TCP_IMAGE_NAME):latest
-	@docker push $(SERVER_IMAGE_NAME):latest
+	@docker build --platform linux/amd64,linux/arm64 -t $(CLIENT_IMAGE_NAME):$(IMAGE_TAG) -t $(CLIENT_IMAGE_NAME):latest -f Dockerfile --target quic-client .
+	@docker build --platform linux/amd64,linux/arm64 -t $(CLIENT_TCP_IMAGE_NAME):$(IMAGE_TAG) -t $(CLIENT_TCP_IMAGE_NAME):latest -f Dockerfile --target quic-client-tcp .
+	@docker build --platform linux/amd64,linux/arm64 -t $(SERVER_IMAGE_NAME):$(IMAGE_TAG) -t $(SERVER_IMAGE_NAME):latest -f Dockerfile --target quic-server .
 
 .PHONY: install
 install:

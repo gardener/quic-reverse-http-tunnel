@@ -59,15 +59,13 @@ Docker images are available at:
 - `ghcr.io/gardener/quic-reverse-http-tunnel/quic-client:latest`
 - `ghcr.io/gardener/quic-reverse-http-tunnel/quic-client-tcp:latest`
 
-If you want to use a specific version tag, the latest version is specified in the `VERSION` variable in the repository's [`Makefile`](./Makefile).
+If you want to use a specific version tag, check the [`tags` of the gardener/quic-reverse-http-tunnel](https://github.com/gardener/quic-reverse-http-tunnel/tags) repository.
 
-When you want to update the docker images and push a new version:
-1. Bump the `VERSION` variable in the repository's [`Makefile`](./Makefile)
-1. Run the following command to build new images:
-    ```console
-    make docker-images
-    ```
-1. Run the following command to push the images to `ghcr.io/gardener/quic-reverse-http-tunnel`
-    ```console
-    make push-docker-images
-    ```
+A [github action](./.github/workflows/image-quic-reverse-http-tunnel.yaml) takes care of building and pushing new images to `ghcr.io` when a new github tag is created.
+
+To build the images locally, you can use the `make docker-images` command:
+```console
+REGISTRY=<your-registry> IMAGE_TAG=<your-image-tag>  make docker-images
+```
+
+**Note** that if you do not specify the `REGISTRY` and `IMAGE_TAG` variables, the default ones from the [`Makefile`](./Makefile) will be used.

@@ -13,19 +13,19 @@ RUN make install
 FROM gcr.io/distroless/static-debian12:nonroot as distroless-static
 
 ############# server
-FROM distroless-static AS server
+FROM distroless-static AS quic-server
 COPY --from=builder /go/bin/server /server
 WORKDIR /
 ENTRYPOINT ["/server"]
 
 ############# client
-FROM distroless-static AS client
+FROM distroless-static AS quic-client
 COPY --from=builder /go/bin/client /client
 WORKDIR /
 ENTRYPOINT ["/client"]
 
 ############# client-tcp
-FROM distroless-static AS client-tcp
+FROM distroless-static AS quic-client-tcp
 COPY --from=builder /go/bin/client-tcp /client-tcp
 WORKDIR /
 ENTRYPOINT ["/client-tcp"]
