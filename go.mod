@@ -3,7 +3,7 @@ module github.com/gardener/quic-reverse-http-tunnel
 go 1.22
 
 require (
-	github.com/quic-go/quic-go v0.42.0
+	github.com/quic-go/quic-go v0.43.0
 	k8s.io/klog/v2 v2.120.1
 )
 
