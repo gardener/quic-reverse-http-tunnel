@@ -1,7 +1,7 @@
 # Modifications Copyright 2024 SAP SE or an SAP affiliate company and Gardener contributors
 
 ############# builder
-FROM golang:1.22.2 AS builder
+FROM golang:1.22.3 AS builder
 ARG GOPROXY=https://proxy.golang.org,direct
 ENV GOPROXY=$GOPROXY
 WORKDIR /go/src/github.com/gardener/quic-reverse-http-tunnel
