@@ -1,0 +1,6 @@
+# See the OWNERS docs at https://go.k8s.io/owners
+
+reviewers:
+- quic-reverse-http-tunnel-reviewers
+approvers:
+- quic-reverse-http-tunnel-approvers
