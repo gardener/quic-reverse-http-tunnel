@@ -4,6 +4,8 @@ aliases:
   quic-reverse-http-tunnel-reviewers:
   - plkokanov
   - rrhubenov
+  - vpnachev
   quic-reverse-http-tunnel-approvers:
   - plkokanov
-  - rrhubenov
+  - rrhubenoi
+  - vpnachev
