@@ -1,0 +1,11 @@
+# See the OWNERS docs at https://go.k8s.io/owners
+
+aliases:
+  quic-reverse-http-tunnel-reviewers:
+  - plkokanov
+  - rrhubenov
+  - vpnachev
+  quic-reverse-http-tunnel-approvers:
+  - plkokanov
+  - rrhubenov
+  - vpnachev
