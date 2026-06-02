@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	github.com/quic-go/quic-go v0.59.1
-	k8s.io/klog/v2 v2.120.1
+	k8s.io/klog/v2 v2.140.0
 )
 
 require (
