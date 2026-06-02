@@ -10,7 +10,7 @@ RUN make install
 
 
 ############# distroless-static
-FROM gcr.io/distroless/static-debian12:nonroot as distroless-static
+FROM gcr.io/distroless/static-debian12:nonroot AS distroless-static
 
 ############# server
 FROM distroless-static AS quic-server
