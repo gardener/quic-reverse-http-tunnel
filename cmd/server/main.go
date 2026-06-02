@@ -26,13 +26,13 @@ func main() {
 
 type clients struct {
 	mu         sync.RWMutex
-	connection []quic.Connection
+	connection []*quic.Conn
 	next       int
 	random     *rand.Rand
 }
 
 // nextConnection returns a random connection at round-robin
-func (c *clients) nextConnection() (quic.Connection, error) {
+func (c *clients) nextConnection() (*quic.Conn, error) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
@@ -60,7 +60,7 @@ func startServeer() error {
 	flag.Parse()
 
 	c := clients{
-		connection: []quic.Connection{},
+		connection: []*quic.Conn{},
 		random:     rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 
@@ -161,7 +161,7 @@ func startServeer() error {
 
 		klog.V(2).InfoS("got a quic client session", "remote", conn.RemoteAddr())
 
-		go func(s quic.Connection) {
+		go func(s *quic.Conn) {
 			c.mu.Lock()
 			c.connection = append(c.connection, s)
 			c.mu.Unlock()
