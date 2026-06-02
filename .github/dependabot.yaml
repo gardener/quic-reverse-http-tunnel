@@ -8,8 +8,12 @@ updates:
   open-pull-requests-limit: 5
   allow:
   - dependency-name: "github.com/quic-go/quic-go"
+  labels:
+  - kind/enhancement
 # Create PRs for golang version updates
 - package-ecosystem: docker
   directory: /
   schedule:
     interval: daily
+  labels:
+  - kind/enhancement
