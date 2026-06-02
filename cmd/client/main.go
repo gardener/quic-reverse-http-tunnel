@@ -39,7 +39,7 @@ var (
 
 // listener implements net.Listener
 type listener struct {
-	connection quic.Connection
+	connection *quic.Conn
 	ctx        context.Context
 }
 
@@ -66,7 +66,7 @@ func (h *listener) Addr() net.Addr {
 
 // conn implements net.Conn.
 type conn struct {
-	quic.Stream
+	*quic.Stream
 	local, remote net.Addr
 }
 
