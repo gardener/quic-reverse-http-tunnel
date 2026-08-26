@@ -1,4 +1,4 @@
-// Modifications Copyright 2024 SAP SE or an SAP affiliate company and Gardener contributors
+// Modifications Contributors to the Gardener project
 
 package main
 
