@@ -1,4 +1,4 @@
-// Modifications Copyright Contributors to the Gardener project
+// Modifications Contributors to the Gardener project
 
 package main
 

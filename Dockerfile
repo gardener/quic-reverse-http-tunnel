@@ -1,4 +1,4 @@
-# Modifications Copyright Contributors to the Gardener project
+# Modifications Contributors to the Gardener project
 
 ############# builder
 FROM golang:1.26.3 AS builder
