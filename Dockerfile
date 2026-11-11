@@ -1,7 +1,7 @@
 # Modifications Contributors to the Gardener project
 
 ############# builder
-FROM golang:1.26.3 AS builder
+FROM golang:1.27.0 AS builder
 ARG GOPROXY=https://proxy.golang.org,direct
 ENV GOPROXY=$GOPROXY
 WORKDIR /go/src/github.com/gardener/quic-reverse-http-tunnel
